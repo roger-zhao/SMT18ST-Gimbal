@@ -6,20 +6,23 @@ class TestGimbalMessage(object):
 
     def test_pack(self):
 
-        gimbal_msg = GimbalMessage(serial_port='/dev/ttyUSB0', serial_baud=115200)
+        # gimbal_msg = GimbalMessage(serial_port='/dev/ttyUSB0', serial_baud=115200)
+        gimbal_msg = GimbalMessage()
 
         # case 2: ptz control
-        message = gimbal_msg.pack_send(cmd='zoom_focus', mode='set', zoom_value=-30, focus_value=50)
-        import time
-        time.sleep(5)
-        message = gimbal_msg.pack_send(cmd='zoom', mode='in')
-        time.sleep(5)
-        message = gimbal_msg.pack_send(cmd='zoom', mode='out')
-        time.sleep(5)
-        message = gimbal_msg.pack_send(cmd='zoom', mode='stop')
+        # message = gimbal_msg.pack_send(cmd='zoom_focus', mode='set', zoom_value=-30, focus_value=50)
+        message = gimbal_msg.pack(cmd_str='zoom_focus', mode='set', zoom_value=-76, focus_value=50)
+        print('message(type{}): {}'.format(type(message), message))
+        # exit(0)
+        # import time
+        # time.sleep(5)
+        # message = gimbal_msg.pack_send(cmd='zoom', mode='in')
+        # time.sleep(5)
+        # message = gimbal_msg.pack_send(cmd='zoom', mode='out')
+        # time.sleep(5)
+        # message = gimbal_msg.pack_send(cmd='zoom', mode='stop')
         # assert ('#TPUG2wGSYE276' == message)
         # assert ('#tpUG6wGAYEC78328D' == message)
-        exit(0)
 
         # case 1: zoom in
         message = gimbal_msg.pack(cmd_str='zoom', mode='in')

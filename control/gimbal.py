@@ -218,11 +218,9 @@ class GimbalMessage(object):
 
     def to_hex(self, val, nbits=8):
         if nbits == 8:
-            return hex((val + (1 << nbits)) % (1 << nbits))[-2:].upper()
-            # return ('{:02x}'.format(val)).upper()
+            return ('{:02x}'.format((val + (1 << nbits)) % (1 << nbits))).upper()
         elif nbits == 16:
-            # return ('{:04x}'.format(val)).upper()
-            return hex((val + (1 << nbits)) % (1 << nbits))[-4:].upper()
+            return ('{:04x}'.format((val + (1 << nbits)) % (1 << nbits))).upper()
 
     def pack(self, cmd_str, **data):
         """
@@ -262,7 +260,7 @@ class GimbalMessage(object):
 
             # struct it
             message = head + CmdM.cmd_M_type + lens + cmd + val
-            self.crc = hex(sum(map(ord, message)))[-2:].upper()
+            self.crc = self.to_hex(sum(map(ord, message)))
             message = message + self.crc
 
         elif cmd_str == 'focus':
@@ -293,7 +291,7 @@ class GimbalMessage(object):
 
             # struct it
             message = head + CmdM.cmd_M_type + lens + cmd + val
-            self.crc = self.to_hex(sum(map(ord, message)))[-2:].upper()
+            self.crc = self.to_hex(sum(map(ord, message)))
             message = message + self.crc
 
         elif cmd_str == 'zoom_focus':
@@ -305,17 +303,17 @@ class GimbalMessage(object):
             if data['mode'] == 'set':
                 cmd = CmdM.zoom_focus_set
                 lens = '8'
-                val = self.to_hex(data['zoom_value'])
-                val = val + self.to_hex(data['focus_value'])
+                val = self.to_hex(data['zoom_value'], 16)
+                val = val + self.to_hex(data['focus_value'], 16)
             else:
                 logger.error('unsupported mode type {type}'.format(type=data['mode']))
                 return False
 
             # struct it
             message = head + CmdM.cmd_M_type + lens + cmd + val
-            self.crc = self.to_hex(sum(map(ord, message)))[-2:].upper()
+            self.crc = self.to_hex(sum(map(ord, message)))
             message = message + self.crc
-            message = '#tpUM8wZFPFFB400320F'
+            # message = '#tpUM8wZFPFFB400320F'
 
         elif cmd_str == 'ptz_control':
             head = ''
@@ -397,7 +395,7 @@ class GimbalMessage(object):
 
             # struct it
             message = head + cmd_type + lens + cmd + val
-            self.crc = self.to_hex(sum(map(ord, message)))[-2:].upper()
+            self.crc = self.to_hex(sum(map(ord, message)))
             message = message + self.crc
         else:
             logger.error('unsupported command {cmd}'.format(cmd=cmd_str))
